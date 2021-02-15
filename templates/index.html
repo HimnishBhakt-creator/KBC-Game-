@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>KBC</title>
+    <link rel="stylesheet"  href="{% static 'kbc/css/style.css' %}" type="text/css">
+    <script>
+    var fiftyUsed=0;
+    var nextPage=1;
+    var correctAns;
+    var flipUsed=0;
+    var fiftyUsedInQuestion=0;
+    var flipUsedInQuestion=0;
+
+        function check(answer,answerId,correctAnswer,nxtQuestion,correctAns_flip,answerFlip){
+            if (flipUsed == 0){
+                var a = confirm("Lock Answer?")
+                if(a==true){
+                    if(answer==correctAnswer){
+                        var audio = document.getElementById("rightanswer");
+                        audio.play();
+                        var timer = document.getElementById("timer")
+                        timer.pause();
+                        clearInterval(window.time);
+                        document.getElementById(answerId).classList.add("rightAns");
+                        var myVar = setTimeout(nxturl ,7000,nxtQuestion);
+                    }
+                    else{
+                        clearInterval(window.time);
+                        var timer = document.getElementById("timer")
+                        timer.pause();
+                        var audio = document.getElementById("wronganswer");
+                        audio.play();
+                        var myVar = setTimeout(nxturl ,3000,"lost");
+                        document.getElementById(answerId).classList.add("wrongAns");
+                    }
+                }
+            }else{
+                var a = confirm("Lock Answer?")
+                if(a==true){
+                    if(answerFlip==correctAns_flip){
+                        var audio = document.getElementById("rightanswer");
+                        audio.play();
+                        var timer = document.getElementById("timer")
+                        timer.pause();
+                        clearInterval(window.time);
+                        document.getElementById(answerId).classList.add("rightAns");
+                        var myVar = setTimeout(nxturl ,7000,nxtQuestion);
+                    }
+                    else{
+                        clearInterval(window.time);
+                        var timer = document.getElementById("timer")
+                        timer.pause();
+                        var audio = document.getElementById("wronganswer");
+                        audio.play();
+                        var myVar = setTimeout(nxturl ,3000,"lost");
+                        document.getElementById(answerId).classList.add("wrongAns");
+                    }
+                }
+            }
+        }
+        
+        function nxturl(nxtQuestion){
+            document.location.href= nxtQuestion+"?f-fifty-used="+fiftyUsed+"&flip-used="+flipUsed;
+        }
+
+var timesclicked=0;
+        function showQuestion(fiftyUsedCheck,flip_used,question_no){
+            fiftyUsed=fiftyUsedCheck;
+            flipUsed=flip_used; 
+            if(question_no=="2"){document.getElementById("1op").classList.add("currentQuestion");}
+            if(question_no=="3"){document.getElementById("2op").classList.add("currentQuestion");}
+            if(question_no=="4"){document.getElementById("3op").classList.add("currentQuestion");}
+            if(question_no=="5"){document.getElementById("4op").classList.add("currentQuestion");}
+            if(question_no=="6"){document.getElementById("5op").classList.add("currentQuestion");}
+            if(question_no=="7"){document.getElementById("6op").classList.add("currentQuestion");}
+            if(question_no=="8"){document.getElementById("7op").classList.add("currentQuestion");}
+            if(question_no=="9"){document.getElementById("8op").classList.add("currentQuestion");}
+            if(question_no=="10"){document.getElementById("9op").classList.add("currentQuestion");}
+            if(question_no=="win"){document.getElementById("10op").classList.add("currentQuestion");}
+            if(timesclicked<1){
+                var x=document.getElementById("question").style.visibility="visible";
+                document.getElementById("show").innerHTML="SHOW OPTIONS";
+                timesclicked++
+            }else{
+                var timer = document.getElementById("timer")
+                timer.style.visibility="visible";
+                timer.play();
+                window.time=setInterval(nxturl,30000,"lost")
+                document.getElementById("show").style.display="none";
+                document.getElementById("1").style.visibility="visible";
+                document.getElementById("2").style.visibility="visible";
+                document.getElementById("3").style.visibility="visible";
+                document.getElementById("4").style.visibility="visible";
+                if(fiftyUsedCheck==1){
+                    document.getElementById("50-50").src="{% static 'kbc/images/Classic5050used.png' %}";
+                }
+                if(flipUsed==1){
+                    document.getElementById("flip").src="{% static 'kbc/images/flip_kross.png' %}";
+                }
+            }
+        }   
+
+        function fiftyFifty(firstId,secondId,fiftyUsedCheck){
+            if(fiftyUsedCheck!=1){
+                if(flipUsedInQuestion==0){
+                    document.getElementById(firstId).style.visibility="hidden";
+                    document.getElementById(secondId).style.visibility="hidden";
+                    document.getElementById("50-50").src="{% static 'kbc/images/Classic5050used.png' %}";
+                    fiftyUsed=1;
+                    fiftyUsedInQuestion=1;
+                }else{alert("Can't use 2 lifelines in the same question")}
+            }
+        }
+        function flip(ques,op1,op2,op3,op4,answer){
+            if(flipUsed== 0){
+                if(fiftyUsedInQuestion==0){
+                    correctAnswer=answer;
+                    document.getElementById("0").innerHTML = ques;
+                    document.getElementById("0").attribute = ques;
+                    document.getElementById("div1").innerHTML = op1;
+                    document.getElementById("div1").attribute = op1;
+                    document.getElementById("div2").innerHTML = op2;
+                    document.getElementById("div2").attribute = op2;
+                    document.getElementById("div3").attribute = op3;
+                    document.getElementById("div3").innerHTML = op3;
+                    document.getElementById("div4").attribute = op4;
+                    document.getElementById("div4").innerHTML = op4;
+                    document.getElementById("flip").src="{% static 'kbc/images/flip_kross.png' %}";
+                    flipUsed=1;
+                    flipUsedInQuestion=1;
+                }else{alert("Can't use 2 lifelines in the same question")}
+            }
+        }
+
+
+    </script>
+    <style>
+        .rightAns{
+            background-color: #00ed86 !important;
+        }
+        .wrongAns{
+            background-color: #ff0000 !important;
+        }
+        .currentQuestion{
+            background-color: #ffb84d;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="logo">
+            <div class="logo-img"></div>
+            <span class="name">KAUN BANEGA CROREPATI</span>
+    </div>
+
+    <div class="right">
+
+        <div id="10op" class="div-secondary">
+            <div class="semi-div1">10</div>
+            <div class="semi-div2">100,00,000</div>
+        </div>
+        <div id="9op" class="div-secondary">
+            <div class="semi-div1">9</div>
+            <div class="semi-div2">50,00,000</div>
+        </div>
+        <div id="8op" class="div-secondary">
+            <div class="semi-div1">8</div>
+            <div class="semi-div2">25,00,000</div>
+        </div>
+        <div id="7op" class="div-secondary">
+            <div class="semi-div1">7</div>
+            <div class="semi-div2">20,00,000</div>
+        </div>
+        <div id="6op" class="div-secondary">
+            <div class="semi-div1">6</div>
+            <div class="semi-div2">10,00,000</div>
+        </div>
+        <div id="5op" class="div-secondary">
+            <div class="semi-div1">5</div>
+            <div class="semi-div2">5,00,000</div>
+        </div>
+        <div id="4op" class="div-secondary">
+            <div class="semi-div1">4</div>
+            <div class="semi-div2">100,000</div>
+        </div>
+        <div id="3op" class="div-secondary">
+            <div class="semi-div1">3</div>
+            <div class="semi-div2">50,000</div>
+        </div>
+        <div id="2op" class="div-secondary">
+            <div class="semi-div1">2</div>
+            <div class="semi-div2">20,000</div>
+        </div>
+        <div id="1op" class="div-secondary">
+            <div class="semi-div1">1</div>
+            <div class="semi-div2">10,000</div>
+        </div>
+        <div>
+            <div style="float:left;">
+                <a onclick="fiftyFifty('{{fiftyFifty.0}}','{{fiftyFifty.1}}','{{fiftyUsed}}')">
+                <img id="50-50" title="50-50" class="f-fifty" src="{% static 'kbc/images/Classic5050.png' %}">
+                </a>
+                <a onclick="flip('{{op_flip.0}}','{{op_flip.1}}','{{op_flip.2}}','{{op_flip.3}}','{{op_flip.4}}','{{correctAns_flip}}','{{flipUsed}}')">
+                    <img id="flip" title="Flip The Question" class="flip" src="{% static 'kbc/images/flip.png' %}" >
+                </a>
+            </div>
+            <div>
+        <a href="">
+            <img class="exit" src="{% static 'kbc/images/quit2.png' %}" title="Game Quit">
+        </a>
+            </div>
+        </div>
+
+    </div>
+    <div class="outline"></div>
+    <div class="blank"></div>
+     <video id="timer" class="timer" style="visibility:hidden;" src="{% static 'kbc/audioVideo/timer.mp4' %}"></video>
+        <a onclick="showQuestion('{{fiftyUsed}}','{{flipUsed}}','{{nxtQuestion}}')"  style="visibility:visible;" ><div id="show" class="quiz hover-quiz">SHOW QUESTION</div></a>
+        <div class="quiz hover-quiz" id="question" style="visibility:hidden;"><p id="0" class="para " >{{op.questions}}</p></div>
+        <a  id="1" onclick="check('{{op.option1}}','div1','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.1}}')" style="visibility:hidden;"><div id="div1" class="ans1 hover-quiz">{{ op.option1 }}</div></a>
+        <a  id="2" onclick="check('{{op.option2}}','div2','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.2}}')" style="visibility:hidden;"><div id="div2" class="ans1 hover-quiz">{{ op.option2 }}</div></a>
+        <a  id="3" onclick="check('{{op.option3}}','div3','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.3}}')" style="visibility:hidden;"><div id="div3" class="ans1 hover-quiz">{{ op.option3 }}</div></a>
+        <a  id="4" onclick="check('{{op.option4}}','div4','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.4}}')" style="visibility:hidden;"><div id="div4" class="ans1 hover-quiz">{{ op.option4 }}</div></a>
+
+        <audio id="rightanswer">
+            <source src="{% static 'kbc/audioVideo/AudienceClapping.mp3' %}">
+        </audio>
+        <audio id="wronganswer">
+            <source src="{% static 'kbc/audioVideo/Wrong Answer.mp3' %}">
+        </audio>
+
+
+
+</body>
+
+</html>
