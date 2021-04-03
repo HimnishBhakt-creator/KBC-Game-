@@ -114,3 +114,7 @@ def lost(request):
 
 def win(request):
     return render(request,"win.html")
+
+def quit(request):
+    won=request.GET.get('won','')
+    return render(request,"quit.html",{"won":won})

@@ -16,5 +16,6 @@ urlpatterns = [
     path('10',views.Q10,name='Q10'),
     path('index',views.home_page, name='home_page'),
     path('lost',views.lost,name='lost'),
-    path('win',views.win,name="win")
+    path('win',views.win,name="win"),
+    path('quit',views.quit,name="quit")
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

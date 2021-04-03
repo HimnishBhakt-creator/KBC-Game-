@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'kbc/css/style.css' %}" type="text/css">
+</head>
+
+<body>
+    <div class="logo">
+        <a href="#">
+            <div class="logo-img"></div>
+        </a> <span class="name hover-name">KAUN BANEGA CROREPATI</span>
+    </div>
+
+    <div class="outline"></div>
+    <div class="blank"></div>
+
+     <div class="win" style="margin-left: 240px;"><h1>Congratulation! You won {{won}}</h1></div>
+
+     
+
+     <a href="index" class="td"><div class="start">Start New Game</div></a>
+     <audio id="won" src="{% static 'kbc/audioVideo/Kbc Theme.mp3' %}" autoplay = "autoplay"></audio>
+</body>
+
+</html>

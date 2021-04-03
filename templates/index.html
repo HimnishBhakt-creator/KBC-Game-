@@ -2,11 +2,16 @@
 <html lang="en">
 <head>
     {% load static %}
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="636026836324-qddfquitom95oc7rabuhe9sahh87e6cu.apps.googleusercontent.com">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>KBC</title>
+    <meta name="viewport">
     <link rel="stylesheet"  href="{% static 'kbc/css/style.css' %}" type="text/css">
+    `<script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
     var fiftyUsed=0;
     var nextPage=1;
@@ -14,6 +19,9 @@
     var flipUsed=0;
     var fiftyUsedInQuestion=0;
     var flipUsedInQuestion=0;
+
+    function onSignIn(googleUser) {
+      }
 
         function check(answer,answerId,correctAnswer,nxtQuestion,correctAns_flip,answerFlip){
             if (flipUsed == 0){
@@ -66,6 +74,20 @@
         function nxturl(nxtQuestion){
             document.location.href= nxtQuestion+"?f-fifty-used="+fiftyUsed+"&flip-used="+flipUsed;
         }
+        function quit(nextQuestion){
+            if(nextQuestion=="3"){document.location.href= "quit?won="+"10,000";}
+            else if(nextQuestion=="4"){document.location.href= "quit?won="+"20,000";}
+            else if(nextQuestion=="5"){document.location.href= "quit?won="+"50,000";}
+            else if(nextQuestion=="6"){document.location.href= "quit?won="+"100,000";}
+            else if(nextQuestion=="7"){document.location.href= "quit?won="+"50☺,000";}
+            else if(nextQuestion=="8"){document.location.href= "quit?won="+"1,000,000";}
+            else if(nextQuestion=="9"){document.location.href= "quit?won="+"2,000,000";}
+            else if(nextQuestion=="10"){document.location.href= "quit?won="+"2,500,000";}
+            else if(nextQuestion=="win"){document.location.href= "quit?won="+"5,000,000";}
+            else if(nextQuestion=="2"){
+                alert("cannot quit on first question");
+            }
+        }
 
 var timesclicked=0;
         function showQuestion(fiftyUsedCheck,flip_used,question_no){
@@ -84,19 +106,24 @@ var timesclicked=0;
             if(timesclicked<1){
                 var x=document.getElementById("question").style.visibility="visible";
                 document.getElementById("show").innerHTML="SHOW OPTIONS";
-                timesclicked++
+                timesclicked++;
             }else{
-                var timer = document.getElementById("timer")
+                var timer = document.getElementById("timer");
                 timer.style.visibility="visible";
                 timer.play();
+                var audio = document.getElementById("timeraudio").play();
                 window.time=setInterval(nxturl,30000,"lost")
                 document.getElementById("show").style.display="none";
                 document.getElementById("1").style.visibility="visible";
                 document.getElementById("2").style.visibility="visible";
                 document.getElementById("3").style.visibility="visible";
                 document.getElementById("4").style.visibility="visible";
+                document.getElementById("flip").style.visibility="visible";
+                document.getElementById("fifty-fifty").style.visibility="visible";
+                document.getElementById("quit").style.visibility="visible";
+                countdown();
                 if(fiftyUsedCheck==1){
-                    document.getElementById("50-50").src="{% static 'kbc/images/Classic5050used.png' %}";
+                    document.getElementById("fifty-fifty").src="{% static 'kbc/images/Classic5050used.png' %}";
                 }
                 if(flipUsed==1){
                     document.getElementById("flip").src="{% static 'kbc/images/flip_kross.png' %}";
@@ -107,10 +134,10 @@ var timesclicked=0;
         function fiftyFifty(firstId,secondId,fiftyUsedCheck){
             if(fiftyUsedCheck!=1){
                 if(flipUsedInQuestion==0){
-                    document.getElementById(firstId).style.visibility="hidden";
-                    document.getElementById(secondId).style.visibility="hidden";
-                    document.getElementById("50-50").src="{% static 'kbc/images/Classic5050used.png' %}";
-                    fiftyUsed=1;
+                    document.getElementById(firstId).style.display="none";
+                    document.getElementById(secondId).style.display="none";
+                    document.getElementById("fifty-fifty").src="{% static 'kbc/images/Classic5050used.png' %}";
+                    fiftyUsed=1;    
                     fiftyUsedInQuestion=1;
                 }else{alert("Can't use 2 lifelines in the same question")}
             }
@@ -135,8 +162,16 @@ var timesclicked=0;
                 }else{alert("Can't use 2 lifelines in the same question")}
             }
         }
-
-
+        var timeLeft = 30;  
+        function countdown() {
+            var timerId = setTimeout(countdown, 1000);
+            if (timeLeft == -1){
+                clearTimeout(timerId);
+            } else {
+                document.getElementById('timerMobile').innerHTML = timeLeft + ' seconds remaining';
+                timeLeft--;
+            }
+        }
     </script>
     <style>
         .rightAns{
@@ -156,10 +191,10 @@ var timesclicked=0;
     <div class="logo">
             <div class="logo-img"></div>
             <span class="name">KAUN BANEGA CROREPATI</span>
-    </div>
-
+            <div class="g-signin2 signIn" data-onsuccess="onSignIn" data-theme="dark"></div>
+    </div>  
+    <div class="outline"></div>
     <div class="right">
-
         <div id="10op" class="div-secondary">
             <div class="semi-div1">10</div>
             <div class="semi-div2">100,00,000</div>
@@ -201,41 +236,43 @@ var timesclicked=0;
             <div class="semi-div2">10,000</div>
         </div>
         <div>
-            <div style="float:left;">
-                <a onclick="fiftyFifty('{{fiftyFifty.0}}','{{fiftyFifty.1}}','{{fiftyUsed}}')">
-                <img id="50-50" title="50-50" class="f-fifty" src="{% static 'kbc/images/Classic5050.png' %}">
+            <div class="lines">
+                <a onclick="fiftyFifty('{{fiftyFifty.0}}','{{fiftyFifty.1}}','{{fiftyUsed}}')" style="visibility:hidden;">
+                    <img id="fifty-fifty" title="fifty-fifty" class="f-fifty" src= "{% static 'kbc/images/Classic5050.png' %}">
                 </a>
-                <a onclick="flip('{{op_flip.0}}','{{op_flip.1}}','{{op_flip.2}}','{{op_flip.3}}','{{op_flip.4}}','{{correctAns_flip}}','{{flipUsed}}')">
+                <a onclick="flip('{{op_flip.questions}}','{{op_flip.option1}}','{{op_flip.option2}}','{{op_flip.option3}}','{{op_flip.option4}}','{{correctAns_flip}}','{{flipUsed}}')" style="visibility:hidden;">
                     <img id="flip" title="Flip The Question" class="flip" src="{% static 'kbc/images/flip.png' %}" >
                 </a>
+                <a id="quit" onclick="quit('{{nxtQuestion}}')" style="visibility:hidden;">
+                    <img class="exit" src="{% static 'kbc/images/quit2.png' %}" title="Game Quit">
+                </a>
             </div>
-            <div>
-        <a href="">
-            <img class="exit" src="{% static 'kbc/images/quit2.png' %}" title="Game Quit">
-        </a>
-            </div>
-        </div>
 
+        </div>
     </div>
-    <div class="outline"></div>
+
     <div class="blank"></div>
-     <video id="timer" class="timer" style="visibility:hidden;" src="{% static 'kbc/audioVideo/timer.mp4' %}"></video>
+           <video id="timer" class="timer" style="visibility:hidden;" src="{% static 'kbc/audioVideo/timer.mp4' %}"></video>
+        <div id="timerMobile" class="timer-mobile" ></div>
         <a onclick="showQuestion('{{fiftyUsed}}','{{flipUsed}}','{{nxtQuestion}}')"  style="visibility:visible;" ><div id="show" class="quiz hover-quiz">SHOW QUESTION</div></a>
         <div class="quiz hover-quiz" id="question" style="visibility:hidden;"><p id="0" class="para " >{{op.questions}}</p></div>
-        <a  id="1" onclick="check('{{op.option1}}','div1','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.1}}')" style="visibility:hidden;"><div id="div1" class="ans1 hover-quiz">{{ op.option1 }}</div></a>
-        <a  id="2" onclick="check('{{op.option2}}','div2','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.2}}')" style="visibility:hidden;"><div id="div2" class="ans1 hover-quiz">{{ op.option2 }}</div></a>
-        <a  id="3" onclick="check('{{op.option3}}','div3','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.3}}')" style="visibility:hidden;"><div id="div3" class="ans1 hover-quiz">{{ op.option3 }}</div></a>
-        <a  id="4" onclick="check('{{op.option4}}','div4','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.4}}')" style="visibility:hidden;"><div id="div4" class="ans1 hover-quiz">{{ op.option4 }}</div></a>
-
+        <div class="test">
+            <a  id="1" onclick="check('{{op.option1}}','div1','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.1}}')" style="visibility:hidden;"><div id="div1" class="ans1 hover-quiz">{{ op.option1 }}</div></a>
+            <a  id="2" onclick="check('{{op.option2}}','div2','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.2}}')" style="visibility:hidden;"><div id="div2" class="ans1 hover-quiz">{{ op.option2 }}</div></a>
+            <a  id="3" onclick="check('{{op.option3}}','div3','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.3}}')" style="visibility:hidden;"><div id="div3" class="ans1 hover-quiz">{{ op.option3 }}</div></a>
+            <a  id="4" onclick="check('{{op.option4}}','div4','{{correctAns}}','{{nxtQuestion}}','{{correctAns_flip}}','{{op_flip.4}}')" style="visibility:hidden;"><div id="div4" class="ans1 hover-quiz">{{ op.option4 }}</div></a>
+        </div>
         <audio id="rightanswer">
             <source src="{% static 'kbc/audioVideo/AudienceClapping.mp3' %}">
         </audio>
         <audio id="wronganswer">
             <source src="{% static 'kbc/audioVideo/Wrong Answer.mp3' %}">
         </audio>
+        <audio id="timeraudio">
+            <source src="{% static 'kbc/audioVideo/timeraudio.mp3' %}">
+        </audio>
 
 
-
+</div>
 </body>
-
 </html>
